@@ -1,0 +1,40 @@
+#!/bin/bash
+echo '############ examdoc ##########'
+echo ip:$(ifconfig|grep inet|grep -v -E "inet6|127" |awk -F " " '{print $2}')
+echo Gateway:$(route -n | grep UG|awk -F " " '{print $2}')
+echo DNS:$(cat /etc/resolv.conf  | grep nameserver |awk '{print $2}')
+echo yumsource:$(cat /etc/yum.repos.d/*.repo|grep baseurl|awk -F "=" '{print $2}'
+)
+echo "############# 2 ###############"
+echo answer: $(hostname)
+echo "############# 3 ###############"
+df -H|grep home
+echo "############# 4 ###############"
+echo PE SIZE :$( vgdisplay  datastore | grep "PE Size" | awk -F " " '{print $3$4}')
+df -H | grep /mnt/database
+echo "############# 5 ###############"
+swapon -s 
+echo "############# 6 ###############"
+getenforce
+echo "############# 7 ###############"
+grep  sysadms /etc/group
+echo "############# 8 ###############"
+id tommy
+echo "############# 9 ###############"
+id Jimmy
+echo "############# 10 ##############"
+id natasha
+id harry
+echo "############# 11 ##############"
+ls -ld /home/materials  2> /dev/null || echo "ERROR:not have file </home/materials>"
+echo "############# 12 ##############"
+ls -l /var/tmp/fstab&&getfacl /var/tmp/fstab || error
+echo "############# 13 ##############"
+cat /var/spool/cron/natasha || echo user err
+echo "############# 14 ##############"
+timedatectl  | grep "NTP synchronized"
+grep server  /etc/chrony.conf |grep ^# -v
+echo "############# 15 ##############"
+ls -l /root/findresults
+echo "############# 16 ##############"
+tail -5 /root/lines

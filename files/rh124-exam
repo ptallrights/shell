@@ -1,0 +1,39 @@
+考试信息：
+IPADDR: 172.25.254.x(X 在这里指您的工作站编号)
+NETMASK: 255.255.255.0
+GATEWAY: 172.25.254.250
+DNS: 172.25.254.250
+yum源地址为：ftp://172.25.254.250/pub/rhel7.0
+
+1.
+在进行考试之前,请先重置根用户密码为 examwestos
+2.
+更改主机名称为 station.domainX.example.com(X 在这里指您的工作站编号)
+3
+新建组,名称为 sysadms,指定其 GID 为 600
+4
+新建用户 tommy,指定 UID 为 2013,配置该用户密码为 redhat
+5
+新建用户 Jimmy,,并且禁止该用户交互式登录,配置该用户密码为 redhat
+6
+新建用户 natasha,harry, 并将这两个用户加入到 sysadms 组当中,作为从属组,如果需要,则将用户密码配置为 redhat
+7
+在/home 目录中创建目录 materials,配置该目录的所属组为 sysadms,要求隶属于 sysadms 组当中的成员对该目录有读写权限,在sysadms目录当中创建的文件或者文件夹,其所属组也
+自动继承 sysadms 的所属组
+8
+拷贝/etc/fstab 文件到/var/tmp 目录中,设置以下需求
+• 使 harry 用户对该文件无任何权限
+• 使 natasha 对该文件有完全控制权限
+• 配置文件所属用户为 root
+• 配置文件所属组为 root
+• 其他所有用户对文件拥有读权限
+• 其他所有用户对文件没有执行权限
+9
+设置 NTP 客户端,与172.25.254.254进行时间同步
+10
+找出用户组mail 拥有的文件,并且将它们放到/root/findresults 目录中
+11
+在文件/usr/share/mime/packages/freedesktop.org.xml 中查找所有包含 ich 的行,将找
+出的行按照先后顺序拷贝到/root/lines
+文件中,/root/lines 文件不包含空格,并且其中行的内容是源文件/usr/share/mime/packages/freedesktop.org.xml 原始行的准确副本
+

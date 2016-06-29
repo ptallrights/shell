@@ -1,0 +1,102 @@
+﻿RHCSA模拟测试
+
+考试时间为2小时（共19题）
+
+安装系统
+安装源为：ftp://172.25.254.250/pub/rhel7.0
+设备设定：设定硬盘大小位10G
+分区划分：/分区6G，
+	swap分区500M，
+　　　	/home为lvm分区，
+　　　	大小为700M
+　　　	/boot分区200M.
+　　　	系统选择性安装图形（可安可不安）
+
+考试信息：
+IPADDR: 172.25.254.x(X 在这里指您的工作站编号)
+NETMASK: 255.255.255.0
+GATEWAY: 172.25.254.250
+DNS: 172.25.254.250
+yum源地址为：ftp://172.25.254.250/pub/rhel7.0
+
+1.
+在进行考试之前,请先重置根用户密码为 examwestos
+2. 
+更改主机名称为 station.domainX.example.com(X 在这里指您的工作站编号)
+3.
+将/home 分区扩大至 512MB,误差范围仅限于 490MB-515MB 之间,并且保留其原有资料的完整性
+4
+按照下面的要求创建一个新的逻辑卷:
+*)逻辑卷命名为 database,属于 datastore 卷组.
+*)逻辑卷的大小为 50 个物理扩展单元(physical extent)
+*)在 datastore 卷组中的逻辑卷,其物理扩展单元(physical extent) 的大小应为 8MB。
+*)使用{vfat|ext3|ext4} 文件系统对新的逻辑卷进行格式化
+*)逻辑卷应该在系统启动的时候自动挂载在/mnt/database 目录下。
+5
+新增加一个 SWAP 分区
+*)大小为 512MB,
+*)使该 SWAP 能够每次开机生效,并且保留原有的 SWAP 分区
+6
+设定selinux为强制级别
+7
+新建组,名称为 sysadms,指定其 GID 为 600
+8
+新建用户 tommy,指定 UID 为 2013,配置该用户密码为 redhat
+9
+新建用户 Jimmy,,并且禁止该用户交互式登录,配置该用户密码为 redhat
+10
+新建用户 natasha,harry, 并将这两个用户加入到 sysadms 组当中,作为从属组,如果需要,则将用户密码配置为 redhat
+11
+在/home 目录中创建目录 materials,配置该目录的所属组为 sysadms,要求隶属于 sysadms 组当中的成员对该目录有读写权限,在sysadms目录当中创建的文件或者文件夹,其所属组也自动继承 sysadms 的所属组
+12
+拷贝/etc/fstab 文件到/var/tmp 目录中,设置以下需求
+• 使 harry 用户对该文件无任何权限
+• 使 natasha 对该文件有完全控制权限
+• 配置文件所属用户为 root
+• 配置文件所属组为 root
+• 其他所有用户对文件拥有读权限
+• 其他所有用户对文件没有执行权限
+13.
+为用户 natasha 创建计划任务,要求在 14:23 执行“/bin/echo hiya”
+
+14
+设置 NTP 客户端,与172.25.254.254进行时间同步
+15
+找出用户组mail 拥有的文件,并且将它们放到/root/findresults 目录中
+16
+在文件/usr/share/mime/packages/freedesktop.org.xml 
+中查找所有包含 ich 的行,
+将找出的行按照先后顺序拷贝到/root/lines文件中,
+/root/lines 文件不包含空格,
+并且其中行的内容是源文件
+/usr/share/mime/packages/freedesktop.org.xml 原始行的准确副本
+17
+配置 FTP 服务
+*)使匿名用户可以上传下载/var/ftp/pub目录里的内容,
+*)使 FTP 服务能够开机自动启动
+18
+配置 LDAP 客户端
+*)使用 TLS 进行认证,
+*)证书路径及配置信息如下,
+*)配置完成之后,验证的用户为 ldapuserX,密码为:kerberos
+*)Cert Path:http://172.25.254.254/pub/example-ca.crt 
+*)Server: classroom.example.com------>ip:172.25.254.254
+*)Base DN: dc=example,dc=com
+*)Realm: EXAMPLE.COM
+*)KDCs:  classroom.example.com
+*)Admin Servrs: classroom.example.com
+19
+配置完 LDAP 客户端之后,
+如果无误,用户应该可以正常进行登录,
+但在登录时,用户还需要初始自己的家目录,
+并加载一些初始化脚本,
+家目录已由 NFS 服务器共享出来,
+请使用 autofs 挂载远端家目录到本地指定路径,
+共享的位置及挂载信息如下
+NFS Server: classroom.example.com
+Share Path: /home/guests/ldapuserx(x为1-20)
+举例 , 
+例如需要 做验证 的用户为 ldapuser1, 
+那么当您 正确的配置完 LDAP 客户端后 ,
+需要使用 autofs 将远端 /home/guests/ldapuser1 
+用户的家目录挂载至您本地的/home/guests/ldapuser1 目录下即可.

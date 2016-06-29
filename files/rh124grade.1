@@ -1,0 +1,29 @@
+#!/bin/bash
+echo “########################### examdoc ############################”
+echo ip:$(ifconfig eth0|grep inet|grep -v inet6 |awk -F " " '{print $2}')
+echo Gateway:$(route -n | grep UG|awk -F " " '{print $2}')
+echo DNS:$(cat /etc/resolv.conf  | grep nameserver |awk '{print $2}')
+echo yumsource:$(cat /etc/yum.repos.d/*.repo|grep baseurl|awk -F "=" '{print $2}'
+)
+echo "############################# 2 ################################"
+echo answer: $(hostname)
+echo "############################# 3 ################################"
+grep   sysadms /etc/group
+echo "############################# 4 ################################"
+id tommy
+echo "############################# 5 ################################"
+id Jimmy
+echo "############################# 6 ################################"
+id natasha
+id harry
+echo "############################# 7 ################################"
+ls -ld /home/materials  2> /dev/null || echo "ERROR:not have file </home/materials>"
+echo "############################# 8 ################################"
+ls -l /var/tmp/fstab&&getfacl /var/tmp/fstab || error
+echo "############################# 9 ################################"
+timedatectl  | grep "NTP synchronized"
+grep server  /etc/chrony.conf |grep ^# -v
+echo "############################# 10 ###############################"
+ls -l /root/findresults
+echo "############################# 11 ###############################"
+tail -5 /root/lines

@@ -1,0 +1,68 @@
+#!/bin/bash
+echo "2.利用find命令在系统中找到属于mail组的文件并把文件备份到/mnt/backup中"
+echo "#######################answer###################"
+FILE2=`ls /mnt/backup | wc -l`
+if
+[ $FILE2 != 0  ]&&[ -d /mnt/backup ]
+then
+GROUP=`ls /mnt/backup -l | awk -F " " '{print $4}' | tail -1`
+if
+[ $GROUP = mail ]
+then
+echo "Q2 测试成功"
+else
+echo "ERROR:文件权限错误"
+fi
+else
+echo "ERROR:文件错误"
+fi
+echo "3.在student用户下执行find命令找到/etc下名字为passwd的文件并把正确信息方到/mnt/file.out中，错误的信息放到/mnt/file.err中"
+echo "#######################answer###################"
+if
+[ -e  /mnt/file.out ]&&[ -e /mnt/file.err) ]
+then
+FINDLEE=`find /etc/ -name passwd 2>/dev/null`
+FINDST=`cat /mnt/file.out`
+FINDLEEER=`find /etc/ -name passwd 2>&1 >/dev/null`
+FINDSTERR=`cat /mnt/file.err`
+if
+[ $FINDLEE = $FINDST ] && [ $FINDLEEER = $FINDSTERR ]
+then
+echo "Q3 测试成功"
+else
+echo "ERROR:文件内容错误"
+fi
+else
+echo "ERROR:文件错误"
+fi
+echo "3.统计/bin下文件个数,并把结果存放在/mnt/binanswer中"
+echo "#######################answer###################"
+if
+[ ! -z $(ls /mnt/binanswer) ]
+then
+AW=`ls /bin |wc -l`
+SW=`cat /mnt/binanswer`
+if
+[ $AW = $SW ]
+then
+echo "Q4 答案正确"
+else
+echo "ERROR:统计错误"
+fi
+else
+echo "ERROR:文件错误"
+fi
+
+echo "5.新建用户jack，tom，lee，testuser要求如下
+        1）jack，tom的附加组都为manager
+        2）lee用户的uid为4000
+        3）testuser用户是系统用户不需要交互shell"
+echo "#######################answer###################"
+
+echo "6.新建目录/public要求所有人都以对此目录可写，但是只能删除属于自己的文件，并且在/public中建立的文件自动归属到manager组中"
+echo "7.在宿主机中建立westos用户，其uid为8000"
+echo "9.在desktop虚拟机中建立用户exam用户，其uid为6000"
+echo "10.利用openssh服务建立westos用户与exam用户的key认证关系，要求如下
+ a)利用exam用户建立密钥并使用公钥锁定exam用户
+ b)westos用户获取私钥
+ c)利用westos用户连接exam用户时仅允许使用密钥认证，并使用的密码为"

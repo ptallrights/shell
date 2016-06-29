@@ -1,0 +1,103 @@
+1.进入救援模式
+修改文件配置为：rw rd.break
+然后ctrl+X 
+进入后执行命令：
+#chroot /sysroot/
+#passwd	#修改root用户密码
+#touch /.autorelabel
+退出进入正常启动模式
+2.
+[root@desktop9 ~]# nmcli connection add type team con-name team0 ifname team0 config '{"runner":{"name":"activebackup"}}'
+Connection 'team0' (db495b9b-4326-4466-a7c6-08d09e8ba77f) successfully added.
+
+[root@desktop9 ~]# nmcli connection modify team0 ipv4.addresses 172.25.9.100/24
+[root@desktop9 ~]# nmcli connection modify team0 ipv4.method manual
+
+[root@desktop9 ~]# nmcli connection add type team-slave ifname eth0 master team0
+Connection 'team-slave-eth0' (490e6026-593a-484d-99b5-3361da4a0de1) successfully added.
+[root@desktop9 ~]# nmcli connection add type team-slave ifname eth1 master team0 
+Connection 'team-slave-eth1' (18467eed-2fae-4dd3-b168-c8cc99119583) successfully added.
+
+3.
+desktop端：
+myhostname = smtp9.example.com
+mydomain = smtp9.example.com
+myorigin = $mydomain
+inet_interfaces = all
+mydestination = $myhostname, $mydomain, localhost
+mynetworks = 172.25.9.0/24 127.0.0.0/8
+local_transport = local:$myhostname
+
+server端：
+myhostname = desktop9.example.com
+mydomain = desktop9.example.com
+myorigin = $mydomain
+inet_interfaces = all
+mydestination =
+mynetworks = 127.0.0.0/8
+relayhost = 172.25.9.10
+local_transport = error:local delivery disabled
+
+4.
+[root@server9 ~]# systemctl restart target
+[root@server9 ~]# systemctl enable target
+firewall-cmd --permanent --add-port=3260/tcp
+
+o- / ................................................................... [...]
+  o- backstores ........................................................ [...]
+  | o- block ............................................ [Storage Objects: 1]
+  | | o- server9.disk1 ........ [/dev/vg0/lv0 (100.0MiB) write-thru activated]
+  | o- fileio ........................................... [Storage Objects: 0]
+  | o- pscsi ............................................ [Storage Objects: 0]
+  | o- ramdisk .......................................... [Storage Objects: 0]
+  o- iscsi ...................................................... [Targets: 1]
+  | o- iqn.2016-03.com.example:server9 ............................. [TPGs: 1]
+  |   o- tpg1 ......................................... [no-gen-acls, no-auth]
+  |     o- acls .................................................... [ACLs: 1]
+  |     | o- iqn.2016-03.com.example:desktop11 .............. [Mapped LUNs: 1]
+  |     |   o- mapped_lun0 ................... [lun0 block/server9.disk1 (rw)]
+  |     o- luns .................................................... [LUNs: 1]
+  |     | o- lun0 ....................... [block/server9.disk1 (/dev/vg0/lv0)]
+  |     o- portals .............................................. [Portals: 2]
+  |       o- 172.25.9.10:3260 ........................................... [OK]
+  |       o- 172.25.9.11:3260 ........................................... [OK]
+  o- loopback ................................................... [Targets: 0]
+/> exit
+
+
+[root@desktop9 ~]# firewall-cmd --permanent --add-port=3260/tcp
+success
+[root@desktop9 ~]# firewall-cmd --reload 
+success
+[root@desktop9 ~]# iscsiadm -m discovery -t st -p 172.25.9.11172.25.9.11:3260,1 iqn.2016-03.com.example:server9
+172.25.9.10:3260,1 iqn.2016-03.com.example:server9
+[root@desktop9 ~]# iscsiadm -m node -T iqn.2016-03.com.example:server9 -p 172.25.9.11 -l 
+Logging in to [iface: default, target: iqn.2016-03.com.example:server9, portal: 172.25.9.11,3260] (multiple)
+Login to [iface: default, target: iqn.2016-03.com.example:server9, portal: 172.25.9.11,3260] successful.
+
+
+9.
+#!/bin/bash
+if [ "$1" = "dog" ];then
+	echo "cat"
+elif [ "$1" = "cat" ];then
+	echo "dog"
+else
+	echo "error"
+fi
+
+
+#!/bin/bash
+id luck &>/dev/null
+if [ $? -eq 0 ];then
+	S=`cat /etc/passwd |grep luck |cut -d : -f 7`
+	OK='/bin/bash'
+	if [ "$S" == "$OK" ];then
+		echo "user ok"
+	else
+		echo "user exist"
+	fi
+else
+	useradd luck && echo "useradd ok"
+fi
+

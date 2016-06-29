@@ -1,0 +1,11 @@
+#!/usr/bin/expect
+set IP [ lindex $argv 0 ]
+set COMMAND [ lindex $argv 1 ]
+spawn ssh root@172.25.254.$IP $COMMAND
+expect {
+	"(yes/no)"
+	{send "yes\r";exp_continue}
+	"password"
+	{send "Asimov\r"}
+}
+interact 
