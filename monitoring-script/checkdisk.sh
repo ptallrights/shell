@@ -1,29 +1,36 @@
 #!/bin/bash
-root="864784581@qq.com"
-use=`df -h |grep -v Use| awk {'print $5'}`
-DATE=`date +%F" "%T`
 
+mail_add="ptallrights@163.com"
+#use=`df -h|grep -v "File"|awk {'print $5'}|sed 's/%//g'`
+use=`df -h|grep -v "File"|awk {'print $6'}`
 
-for i in ${use}
+Host=`hostname`
+Date=`date '+%Y-%m-%d %H:%I:%S'`
+Title="##########Information from ${Host} at ${Date}##########"
+Log=/var/log/checkdisk.log
+
+for i in $use
 do
-        if [ `echo $i|awk -F % '{print $1}'` -lt 10 ]
+        if [ `df -h|grep "${i}$"|awk {'print $5'}|sed 's/%//g'` -lt 80 ]
         then
-                disk=`df -h | grep "\<$i"  | awk {'print $1'}`
-                        echo "${disk} is ok"
-
-                        echo ">>>>>>>>>>>>>>>>>"
-
+                disk_name=`df -h|grep "${i}$"|awk {'print $1'}`
+                echo "${disk_name} is ok"
+                echo "**************"
         else
-                disk_error=`df -h |grep $i | awk {'print $1'}`
-                message(){
-                        echo "$HOSTNAME"
-                        echo "send time is $DATE"
-                        echo "recipients is ${root}"
-                        echo "$disk_error have no avail space to use"
-                        echo "$disk_error have already use $i "
-                }
-
-                message | mail -s 'Alert:Almost out of disk space' ${root}
+                disk_error=`df -h |grep "${i}$"|awk {'print $1'}`
+                disk_used=`df -h |grep "${i}$"|awk {'print $5'}`
+                cat > /var/log/test.log << end
+"${Title}"
+"From ${Host}"
+"Send time is ${Date}"
+"recipient is ${mail_add}"
+"$disk_error have no avial space to use"
+"$disk_error have already use $disk_used"
+end
+                cat /var/log/test.log >> $Log
+                mail -s "Alert:Almost out of disk space" ${mail_add} < /var/log/test.log
+                rm -fr /var/log/test.log
         fi
 done
+
 
